@@ -1,49 +1,23 @@
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import React, { useEffect, useState } from "react";
+import MuiModal from "@mui/material/Modal";
 import { modalState, movieState } from "../atoms/modalAtoms";
-import ReactPlayer from "react-player/lazy";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  CheckIcon,
-  PlusIcon,
   ThumbUpIcon,
   VolumeOffIcon,
   VolumeUpIcon,
   XIcon,
-} from "@heroicons/react/outline";
-import { Element, Genre, Movie } from "../typings";
-import MuiModal from "@mui/material/Modal";
-// import {
-//   collection,
-//   deleteDoc,
-//   doc,
-//   DocumentData,
-//   onSnapshot,
-//   setDoc,
-// } from "firebase/firestore";
-// import { db } from "../firebase";
-import useAuth from "../hooks/useAuth";
-import toast, { Toaster } from "react-hot-toast";
+} from "@heroicons/react/solid";
+import { Element, Genre } from "../typings";
+import ReactPlayer from "react-player/lazy";
+import { FaPlay } from "react-icons/fa";
 
-function Modal() {
-  const [movie, setMovie] = useRecoilState(movieState);
-  const [trailer, setTrailer] = useState("");
+const Modal = () => {
   const [showModal, setShowModal] = useRecoilState(modalState);
   const [muted, setMuted] = useState(false);
+  const [movie, setMovie] = useRecoilState(movieState);
   const [genres, setGenres] = useState<Genre[]>([]);
-  // const [addedToList, setAddedToList] = useState(false);
-  // const { user } = useAuth();
-  // const [movies, setMovies] = useState<DocumentData[] | Movie[]>([]);
-
-  const toastStyle = {
-    background: "white",
-    color: "black",
-    fontWeight: "bold",
-    fontSize: "16px",
-    padding: "15px",
-    borderRadius: "9999px",
-    maxWidth: "1000px",
-  };
-
+  const [trailer, setTrailer] = useState("");
   useEffect(() => {
     if (!movie) return;
 
@@ -65,67 +39,12 @@ function Modal() {
         setGenres(data.genres);
       }
     }
-
     fetchMovie();
   }, [movie]);
 
   const handleClose = () => {
     setShowModal(false);
-    setMovie(null);
-    toast.dismiss();
   };
-
-  // // Find all the movies in the user's list
-  // useEffect(() => {
-  //   if (user) {
-  //     return onSnapshot(
-  //       collection(db, "customers", user.uid, "myList"),
-  //       (snapshot) => setMovies(snapshot.docs)
-  //     );
-  //   }
-  // }, [db, movie?.id]);
-
-  // // Check if the movie is already in the user's list
-  // useEffect(
-  //   () =>
-  //     setAddedToList(
-  //       movies.findIndex((result) => result.data().id === movie?.id) !== -1
-  //     ),
-  //   [movies]
-  // );
-
-  // const handleList = async () => {
-  //   if (addedToList) {
-  //     await deleteDoc(
-  //       doc(db, "customers", user!.uid, "myList", movie?.id.toString()!)
-  //     );
-
-  //     toast(
-  //       `${movie?.title || movie?.original_name} has been removed from My List`,
-  //       {
-  //         duration: 8000,
-  //         style: toastStyle,
-  //       }
-  //     );
-  //   } else {
-  //     await setDoc(
-  //       doc(db, "customers", user!.uid, "myList", movie?.id.toString()!),
-  //       {
-  //         ...movie,
-  //       }
-  //     );
-
-  //     toast(
-  //       `${movie?.title || movie?.original_name} has been added to My List.`,
-  //       {
-  //         duration: 8000,
-  //         style: toastStyle,
-  //       }
-  //     );
-  //   }
-  // };
-
-  // console.log(addedToList);
 
   return (
     <MuiModal
@@ -134,14 +53,12 @@ function Modal() {
       className="fixed !top-7 left-0 right-0 z-50 mx-auto w-full max-w-5xl overflow-hidden overflow-y-scroll rounded-md scrollbar-hide"
     >
       <>
-        <Toaster position="bottom-center" />
         <button
-          className="modalButton absolute right-5 top-5 !z-40 h-7 w-7 border-none bg-[#181818] hover:bg-[#181818]"
           onClick={handleClose}
+          className="modatButton absolute right-5 top-5 !z40 h-9 w-9 border-none bg-[#181818"
         >
-          <XIcon className="h-6 w-6 text-center" />
+          <XIcon className="h-6 w-6 />" />
         </button>
-
         <div className="relative pt-[56.25%]">
           <ReactPlayer
             url={`https://www.youtube.com/watch?v=${trailer}`}
@@ -157,13 +74,13 @@ function Modal() {
                 <FaPlay className="h-7 w-7 text-black" />
                 Play
               </button> */}
-              {/* <button className="modalButton" onClick={handleList}>
-                {addedToList ? (
+              <button className="modalButton">
+                {/* {addedToList ? (
                   <CheckIcon className="h-7 w-7" />
                 ) : (
                   <PlusIcon className="h-7 w-7" />
-                )}
-              </button> */}
+                )} */}
+              </button>
               <button className="modalButton">
                 <ThumbUpIcon className="h-6 w-6" />
               </button>
@@ -177,6 +94,7 @@ function Modal() {
             </button>
           </div>
         </div>
+
         <div className="flex space-x-16 rounded-b-md bg-[#181818] px-10 py-8">
           <div className="space-y-6 text-lg">
             <div className="flex items-center space-x-2 text-sm">
@@ -214,6 +132,6 @@ function Modal() {
       </>
     </MuiModal>
   );
-}
+};
 
 export default Modal;
